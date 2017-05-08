@@ -18,16 +18,18 @@ public class Message implements IMessage,
     private User user;
     private Image image;
     private Voice voice;
+    private boolean isSupportMessage;
 
-    public Message(String id, User user, String text) {
-        this(id, user, text, new Date());
+    public Message(String id, User user, String text, boolean supportMsg) {
+        this(id, user, text, new Date(), supportMsg);
     }
 
-    public Message(String id, User user, String text, Date createdAt) {
+    public Message(String id, User user, String text, Date createdAt, boolean supportMsg) {
         this.id = id;
         this.text = text;
         this.user = user;
         this.createdAt = createdAt;
+        this.isSupportMessage = supportMsg;
     }
 
     @Override
@@ -54,6 +56,9 @@ public class Message implements IMessage,
     public String getImageUrl() {
         return image == null ? null : image.url;
     }
+
+    @Override
+    public boolean isSupportMessage() { return this.isSupportMessage; }
 
     public Voice getVoice() {
         return voice;

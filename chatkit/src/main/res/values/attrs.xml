@@ -139,6 +139,38 @@
             <flag name="italic" value="2"/>
         </attr>
 
+        <attr name="supportTextLinkColor" format="color|reference"/>
+
+        <attr name="supportBubbleDrawable" format="reference"/>
+        <attr name="supportDefaultBubbleColor" format="color|reference"/>
+        <attr name="supportDefaultBubblePressedColor" format="color|reference"/>
+        <attr name="supportDefaultBubbleSelectedColor" format="color|reference"/>
+
+        <attr name="supportImageOverlayDrawable" format="reference"/>
+        <attr name="supportDefaultImageOverlayPressedColor" format="color|reference"/>
+        <attr name="supportDefaultImageOverlaySelectedColor" format="color|reference"/>
+
+        <attr name="supportBubblePaddingLeft" format="dimension|reference"/>
+        <attr name="supportBubblePaddingRight" format="dimension|reference"/>
+        <attr name="supportBubblePaddingTop" format="dimension|reference"/>
+        <attr name="supportBubblePaddingBottom" format="dimension|reference"/>
+
+        <attr name="supportTextColor" format="color|reference"/>
+        <attr name="supportTextSize" format="dimension|reference"/>
+        <attr name="supportTextStyle">
+            <flag name="normal" value="0"/>
+            <flag name="bold" value="1"/>
+            <flag name="italic" value="2"/>
+        </attr>
+
+        <attr name="supportTimeTextColor" format="color|reference"/>
+        <attr name="supportTimeTextSize" format="dimension|reference"/>
+        <attr name="supportTimeTextStyle">
+            <flag name="normal" value="0"/>
+            <flag name="bold" value="1"/>
+            <flag name="italic" value="2"/>
+        </attr>
+        
         <attr name="dateHeaderPadding" format="dimension|reference"/>
         <attr name="dateHeaderFormat" format="string|reference"/>
         <attr name="dateHeaderTextColor" format="color|reference"/>

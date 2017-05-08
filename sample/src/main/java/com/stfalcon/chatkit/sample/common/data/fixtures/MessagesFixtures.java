@@ -16,13 +16,13 @@ public final class MessagesFixtures extends FixturesData {
     }
 
     public static Message getImageMessage() {
-        Message message = new Message(getRandomId(), getUser(), null);
+        Message message = new Message(getRandomId(), getUser(), null, false);
         message.setImage(new Message.Image(getRandomImage()));
         return message;
     }
 
     public static Message getVoiceMessage() {
-        Message message = new Message(getRandomId(), getUser(), null);
+        Message message = new Message(getRandomId(), getUser(), null, false);
         message.setVoice(new Message.Voice("http://example.com", rnd.nextInt(200) + 30));
         return message;
     }
@@ -31,8 +31,12 @@ public final class MessagesFixtures extends FixturesData {
         return getTextMessage(getRandomMessage());
     }
 
+    public static Message getSupportMessage() {
+        return new Message(getRandomId(), getUser(), "This is support message", true);
+    }
+
     public static Message getTextMessage(String text) {
-        return new Message(getRandomId(), getUser(), text);
+        return new Message(getRandomId(), getUser(), text, false);
     }
 
     public static ArrayList<Message> getMessages(Date startDate) {
@@ -44,6 +48,8 @@ public final class MessagesFixtures extends FixturesData {
                 Message message;
                 if (i % 2 == 0 && j % 3 == 0) {
                     message = getImageMessage();
+                } else if (i % 3 == 0 && j % 3 == 0) {
+                    message = getSupportMessage();
                 } else {
                     message = getTextMessage();
                 }

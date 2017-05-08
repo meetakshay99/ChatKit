@@ -24,6 +24,13 @@ import java.util.Date;
 public interface IMessage {
 
     /**
+     * Returns if the message is a support message.
+     *
+     * @return true if support message else false.
+     */
+    boolean isSupportMessage();
+
+    /**
      * Returns message identifier
      *
      * @return the message id

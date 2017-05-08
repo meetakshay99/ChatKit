@@ -38,6 +38,7 @@ class MessagesListStyle extends Style {
     private int textAutoLinkMask;
     private int incomingTextLinkColor;
     private int outcomingTextLinkColor;
+    private int supportTextLinkColor;
 
     private int incomingAvatarWidth;
     private int incomingAvatarHeight;
@@ -93,6 +94,24 @@ class MessagesListStyle extends Style {
     private int outcomingImageTimeTextColor;
     private int outcomingImageTimeTextSize;
     private int outcomingImageTimeTextStyle;
+
+    private int supportBubbleDrawable;
+    private int supportDefaultBubbleColor;
+    private int supportDefaultBubblePressedColor;
+    private int supportDefaultBubbleSelectedColor;
+
+    private int supportDefaultBubblePaddingLeft;
+    private int supportDefaultBubblePaddingRight;
+    private int supportDefaultBubblePaddingTop;
+    private int supportDefaultBubblePaddingBottom;
+
+    private int supportTextColor;
+    private int supportTextSize;
+    private int supportTextStyle;
+
+    private int supportTimeTextColor;
+    private int supportTimeTextSize;
+    private int supportTimeTextStyle;
 
     private int dateHeaderPadding;
     private String dateHeaderFormat;
@@ -194,6 +213,37 @@ class MessagesListStyle extends Style {
         style.outcomingImageTimeTextSize = typedArray.getDimensionPixelSize(R.styleable.MessagesList_outcomingImageTimeTextSize,
                 style.getDimension(R.dimen.message_time_text_size));
         style.outcomingImageTimeTextStyle = typedArray.getInt(R.styleable.MessagesList_outcomingImageTimeTextStyle, Typeface.NORMAL);
+
+        style.supportTextLinkColor = typedArray.getColor(R.styleable.MessagesList_supportTextLinkColor,
+                style.getSystemAccentColor());
+
+        style.supportBubbleDrawable = typedArray.getResourceId(R.styleable.MessagesList_supportBubbleDrawable, -1);
+        style.supportDefaultBubbleColor = typedArray.getColor(R.styleable.MessagesList_supportDefaultBubbleColor,
+                style.getColor(R.color.white_two));
+        style.supportDefaultBubblePressedColor = typedArray.getColor(R.styleable.MessagesList_supportDefaultBubblePressedColor,
+                style.getColor(R.color.white_two));
+        style.supportDefaultBubbleSelectedColor = typedArray.getColor(R.styleable.MessagesList_supportDefaultBubbleSelectedColor,
+                style.getColor(R.color.cornflower_blue_two_24));
+
+        style.supportDefaultBubblePaddingLeft = typedArray.getDimensionPixelSize(R.styleable.MessagesList_supportBubblePaddingLeft,
+                style.getDimension(R.dimen.message_padding_left));
+        style.supportDefaultBubblePaddingRight = typedArray.getDimensionPixelSize(R.styleable.MessagesList_supportBubblePaddingRight,
+                style.getDimension(R.dimen.message_padding_right));
+        style.supportDefaultBubblePaddingTop = typedArray.getDimensionPixelSize(R.styleable.MessagesList_supportBubblePaddingTop,
+                style.getDimension(R.dimen.message_padding_top));
+        style.supportDefaultBubblePaddingBottom = typedArray.getDimensionPixelSize(R.styleable.MessagesList_supportBubblePaddingBottom,
+                style.getDimension(R.dimen.message_padding_bottom));
+        style.supportTextColor = typedArray.getColor(R.styleable.MessagesList_supportTextColor,
+                style.getColor(R.color.dark_grey_two));
+        style.supportTextSize = typedArray.getDimensionPixelSize(R.styleable.MessagesList_supportTextSize,
+                style.getDimension(R.dimen.message_text_size));
+        style.supportTextStyle = typedArray.getInt(R.styleable.MessagesList_supportTextStyle, Typeface.NORMAL);
+
+        style.supportTimeTextColor = typedArray.getColor(R.styleable.MessagesList_supportTimeTextColor,
+                style.getColor(R.color.warm_grey_four));
+        style.supportTimeTextSize = typedArray.getDimensionPixelSize(R.styleable.MessagesList_supportTimeTextSize,
+                style.getDimension(R.dimen.message_time_text_size));
+        style.supportTimeTextStyle = typedArray.getInt(R.styleable.MessagesList_supportTimeTextStyle, Typeface.NORMAL);
 
         style.dateHeaderPadding = typedArray.getDimensionPixelSize(R.styleable.MessagesList_dateHeaderPadding,
                 style.getDimension(R.dimen.message_date_header_padding));
@@ -407,6 +457,58 @@ class MessagesListStyle extends Style {
                     incomingDefaultImageOverlayPressedColor, R.drawable.shape_incoming_message);
         } else {
             return getDrawable(incomingImageOverlayDrawable);
+        }
+    }
+
+    int getSupportTextLinkColor() {
+        return supportTextLinkColor;
+    }
+
+    int getSupportDefaultBubblePaddingLeft() {
+        return supportDefaultBubblePaddingLeft;
+    }
+
+    int getSupportDefaultBubblePaddingRight() {
+        return supportDefaultBubblePaddingRight;
+    }
+
+    int getSupportDefaultBubblePaddingTop() {
+        return supportDefaultBubblePaddingTop;
+    }
+
+    int getSupportDefaultBubblePaddingBottom() {
+        return supportDefaultBubblePaddingBottom;
+    }
+
+    int getSupportTextColor() {
+        return supportTextColor;
+    }
+
+    int getSupportTextSize() {
+        return supportTextSize;
+    }
+
+    int getSupportTextStyle() {
+        return supportTextStyle;
+    }
+    int getSupportTimeTextSize() {
+        return supportTimeTextSize;
+    }
+
+    int getSupportTimeTextStyle() {
+        return supportTimeTextStyle;
+    }
+
+    int getSupportTimeTextColor() {
+        return supportTimeTextColor;
+    }
+
+    Drawable getSupportBubbleDrawable() {
+        if (supportBubbleDrawable == -1) {
+            return getMessageSelector(supportDefaultBubbleColor, supportDefaultBubbleSelectedColor,
+                    supportDefaultBubblePressedColor, R.drawable.shape_support_message);
+        } else {
+            return getDrawable(supportBubbleDrawable);
         }
     }
 }

@@ -33,12 +33,14 @@ public class MessageHolders {
     private static final short VIEW_TYPE_DATE_HEADER = 130;
     private static final short VIEW_TYPE_TEXT_MESSAGE = 131;
     private static final short VIEW_TYPE_IMAGE_MESSAGE = 132;
+    private static final short VIEW_TYPE_SUPPORT_MESSAGE = 133;
 
     private Class<? extends ViewHolder<Date>> dateHeaderHolder;
     private int dateHeaderLayout;
 
     private HolderConfig<IMessage> incomingTextConfig;
     private HolderConfig<IMessage> outcomingTextConfig;
+    private HolderConfig<IMessage> supportTextConfig;
     private HolderConfig<MessageContentType.Image> incomingImageConfig;
     private HolderConfig<MessageContentType.Image> outcomingImageConfig;
 
@@ -53,6 +55,7 @@ public class MessageHolders {
         this.outcomingTextConfig = new HolderConfig<>(DefaultOutcomingTextMessageViewHolder.class, R.layout.item_outcoming_text_message);
         this.incomingImageConfig = new HolderConfig<>(DefaultIncomingImageMessageViewHolder.class, R.layout.item_incoming_image_message);
         this.outcomingImageConfig = new HolderConfig<>(DefaultOutcomingImageMessageViewHolder.class, R.layout.item_outcoming_image_message);
+        this.supportTextConfig = new HolderConfig<>(DefaultSupportTextMessageViewHolder.class, R.layout.item_support_text_message);
     }
 
     /**
@@ -71,6 +74,21 @@ public class MessageHolders {
     }
 
     /**
+     * Sets both of custom view holder class and layout resource for support text message.
+     *
+     * @param holder holder class.
+     * @param layout layout resource.
+     * @return {@link MessageHolders} for subsequent configuration.
+     */
+    public MessageHolders setSupportTextConfig(
+            @NonNull Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
+            @LayoutRes int layout) {
+        this.supportTextConfig.holder = holder;
+        this.supportTextConfig.layout = layout;
+        return this;
+    }
+
+    /**
      * Sets custom view holder class for incoming text message.
      *
      * @param holder holder class.
@@ -83,6 +101,18 @@ public class MessageHolders {
     }
 
     /**
+     * Sets custom view holder class for support text message.
+     *
+     * @param holder holder class.
+     * @return {@link MessageHolders} for subsequent configuration.
+     */
+    public MessageHolders setSupportTextHolder(
+            @NonNull Class<? extends BaseMessageViewHolder<? extends IMessage>> holder) {
+        this.supportTextConfig.holder = holder;
+        return this;
+    }
+
+    /**
      * Sets custom layout resource for incoming text message.
      *
      * @param layout layout resource.
@@ -90,6 +120,17 @@ public class MessageHolders {
      */
     public MessageHolders setIncomingTextLayout(@LayoutRes int layout) {
         this.incomingTextConfig.layout = layout;
+        return this;
+    }
+
+    /**
+     * Sets custom layout resource for support text message.
+     *
+     * @param layout layout resource.
+     * @return {@link MessageHolders} for subsequent configuration.
+     */
+    public MessageHolders setSupportTextLayout(@LayoutRes int layout) {
+        this.supportTextConfig.layout = layout;
         return this;
     }
 
@@ -331,6 +372,8 @@ public class MessageHolders {
                 return getHolder(parent, incomingImageConfig, messagesListStyle);
             case -VIEW_TYPE_IMAGE_MESSAGE:
                 return getHolder(parent, outcomingImageConfig, messagesListStyle);
+            case VIEW_TYPE_SUPPORT_MESSAGE:
+                return getHolder(parent, supportTextConfig, messagesListStyle);
             default:
                 for (ContentTypeConfig typeConfig : customContentTypes) {
                     if (Math.abs(typeConfig.type) == Math.abs(viewType)) {
@@ -369,8 +412,12 @@ public class MessageHolders {
 
         if (item instanceof IMessage) {
             IMessage message = (IMessage) item;
-            isOutcoming = message.getUser().getId().contentEquals(senderId);
-            viewType = getContentViewType(message);
+            if (message.isSupportMessage()) {
+                return VIEW_TYPE_SUPPORT_MESSAGE;
+            } else {
+                isOutcoming = message.getUser().getId().contentEquals(senderId);
+                viewType = getContentViewType(message);
+            }
 
         } else viewType = VIEW_TYPE_DATE_HEADER;
 
@@ -579,6 +626,55 @@ public class MessageHolders {
                 text.setTypeface(text.getTypeface(), style.getOutcomingTextStyle());
                 text.setAutoLinkMask(style.getTextAutoLinkMask());
                 text.setLinkTextColor(style.getOutcomingTextLinkColor());
+                configureLinksBehavior(text);
+            }
+        }
+    }
+
+    /**
+     * Default view holder implementation for support text message
+     */
+    public static class SupportTextMessageViewHolder<MESSAGE extends IMessage>
+            extends BaseSupportMessageViewHolder<MESSAGE> {
+
+        protected ViewGroup bubble;
+        protected TextView text;
+
+        public SupportTextMessageViewHolder(View itemView) {
+            super(itemView);
+            bubble = (ViewGroup) itemView.findViewById(R.id.bubble);
+            text = (TextView) itemView.findViewById(R.id.messageText);
+        }
+
+        @Override
+        public void onBind(MESSAGE message) {
+            super.onBind(message);
+            if (bubble != null) {
+                bubble.setSelected(isSelected());
+            }
+
+            if (text != null) {
+                text.setText(message.getText());
+            }
+        }
+
+        @Override
+        public void applyStyle(MessagesListStyle style) {
+            super.applyStyle(style);
+            if (bubble != null) {
+                bubble.setPadding(style.getSupportDefaultBubblePaddingLeft(),
+                        style.getSupportDefaultBubblePaddingTop(),
+                        style.getSupportDefaultBubblePaddingRight(),
+                        style.getSupportDefaultBubblePaddingBottom());
+                bubble.setBackground(style.getSupportBubbleDrawable());
+            }
+
+            if (text != null) {
+                text.setTextColor(style.getSupportTextColor());
+                text.setTextSize(TypedValue.COMPLEX_UNIT_PX, style.getSupportTextSize());
+                text.setTypeface(text.getTypeface(), style.getSupportTextStyle());
+                text.setAutoLinkMask(style.getTextAutoLinkMask());
+                text.setLinkTextColor(style.getSupportTextLinkColor());
                 configureLinksBehavior(text);
             }
         }
@@ -803,6 +899,36 @@ public class MessageHolders {
         }
     }
 
+    /**
+     * Base view holder for support message
+     */
+    public abstract static class BaseSupportMessageViewHolder<MESSAGE extends IMessage>
+            extends BaseMessageViewHolder<MESSAGE> implements DefaultMessageViewHolder {
+
+        protected TextView time;
+
+        public BaseSupportMessageViewHolder(View itemView) {
+            super(itemView);
+            time = (TextView) itemView.findViewById(R.id.messageTime);
+        }
+
+        @Override
+        public void onBind(MESSAGE message) {
+            if (time != null) {
+                time.setText(DateFormatter.format(message.getCreatedAt(), DateFormatter.Template.TIME));
+            }
+        }
+
+        @Override
+        public void applyStyle(MessagesListStyle style) {
+            if (time != null) {
+                time.setTextColor(style.getSupportTimeTextColor());
+                time.setTextSize(TypedValue.COMPLEX_UNIT_PX, style.getSupportTimeTextSize());
+                time.setTypeface(time.getTypeface(), style.getSupportTimeTextStyle());
+            }
+        }
+    }
+
     /*
     * DEFAULTS
     * */
@@ -839,6 +965,14 @@ public class MessageHolders {
             extends OutcomingImageMessageViewHolder<MessageContentType.Image> {
 
         public DefaultOutcomingImageMessageViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    private static class DefaultSupportTextMessageViewHolder
+            extends SupportTextMessageViewHolder<IMessage> {
+
+        public DefaultSupportTextMessageViewHolder(View itemView) {
             super(itemView);
         }
     }
